@@ -67,6 +67,22 @@ namespace GameOfLife
             Assert.IsTrue(game.isAliveAt(1, 1));
         }
 
+        [TestMethod]
+        public void Run_KillsCells_WithFourNeighbors()
+        {
+            var game = new GameOfLife();
+
+            game.Register(new Cell(0, 1));
+            game.Register(new Cell(1, 1));
+            game.Register(new Cell(2, 1));
+            game.Register(new Cell(2, 0));
+            game.Register(new Cell(1, 0));
+
+            game.Run();
+
+            Assert.IsFalse(game.isAliveAt(1, 1));
+        }
+
     }
 
     public class GameOfLife
@@ -101,7 +117,7 @@ namespace GameOfLife
                 var dx = Math.Abs(cell.X - arg.X);
                 var dy = Math.Abs(cell.Y - arg.Y);
 
-                return (dx <= 1 || dy <= 1) && (dx-dy>0);
+                return (dx <= 1 || dy <= 1) && (dx + dy != 0);
             });
             
             return count == 2 || count == 3;
