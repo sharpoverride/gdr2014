@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameOfLife
 {
@@ -37,6 +38,20 @@ namespace GameOfLife
             Assert.IsFalse(game.isAliveAt(1, 1));
         }
 
+        [TestMethod]
+        public void Run_KeppsCells_WithTwoNeighbors()
+        {
+            var game = new GameOfLife();
+
+            game.Register(new Cell(0, 1));
+            game.Register(new Cell(1, 1));
+            game.Register(new Cell(2, 1));
+
+            game.Run();
+
+            Assert.IsTrue(game.isAliveAt(1, 1));
+        }
+
     }
 
     public class GameOfLife
@@ -59,7 +74,22 @@ namespace GameOfLife
 
         public void Run()
         {
-            _cells.Clear();
+            var survivingCells = _cells.Where(HasTwoNeighbours).ToList();
+
+            _cells = survivingCells;
+        }
+
+        private bool HasTwoNeighbours(Cell arg)
+        {
+            var count = _cells.Count(cell =>
+            {
+                var dx = Math.Abs(cell.X - arg.X);
+                var dy = Math.Abs(cell.Y - arg.Y);
+
+                return dx == 1 || dy == 1;
+            });
+            
+            return count == 2;
         }
     }
 
