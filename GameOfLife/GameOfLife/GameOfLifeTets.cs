@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace GameOfLife
 {
@@ -7,7 +8,7 @@ namespace GameOfLife
     public class GameOfLifeTests
     {
         [TestMethod]
-        public void Run_OneCellIsAlive_WhenRegistered()
+        public void Register_OneCellIsAlive_WhenRegistered()
         {
             var game = new GameOfLife();
 
@@ -15,10 +16,20 @@ namespace GameOfLife
 
             Assert.IsTrue(game.isAliveAt(1,1));
         }
+
+        [TestMethod]
+        public void IsAlive_NoInitialPopulation_ReturnsFalse()
+        {
+            var game = new GameOfLife();
+
+            Assert.IsFalse(game.isAliveAt(1, 1));
+        }
+
     }
 
     public class GameOfLife
     {
+        List<Cell> _cells = new List<Cell>();
         public GameOfLife()
         {
 
@@ -26,11 +37,12 @@ namespace GameOfLife
 
         public void Register(Cell cell)
         {
+            _cells.Add(cell);
         }
 
         public bool isAliveAt(int x, int y)
         {
-            return true;
+            return _cells.Contains(new Cell(x,y));
         }
     }
 
@@ -45,5 +57,16 @@ namespace GameOfLife
         public int Y { get; set; }
 
         public int X { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var cell = (Cell)obj;
+
+            if (cell == null)
+            {
+                return false;
+            }
+            return cell.X == X && cell.Y == Y;
+        }
     }
 }
