@@ -39,13 +39,28 @@ namespace GameOfLife
         }
 
         [TestMethod]
-        public void Run_KeppsCells_WithTwoNeighbors()
+        public void Run_KeepsCells_WithTwoNeighbors()
         {
             var game = new GameOfLife();
 
             game.Register(new Cell(0, 1));
             game.Register(new Cell(1, 1));
             game.Register(new Cell(2, 1));
+
+            game.Run();
+
+            Assert.IsTrue(game.isAliveAt(1, 1));
+        }
+
+        [TestMethod]
+        public void Run_KeepsCells_WithThreeNeighbors()
+        {
+            var game = new GameOfLife();
+
+            game.Register(new Cell(0, 1));
+            game.Register(new Cell(1, 1));
+            game.Register(new Cell(2, 1));
+            game.Register(new Cell(1, 0));
 
             game.Run();
 
@@ -74,22 +89,22 @@ namespace GameOfLife
 
         public void Run()
         {
-            var survivingCells = _cells.Where(HasTwoNeighbours).ToList();
+            var survivingCells = _cells.Where(CanSurvive).ToList();
 
             _cells = survivingCells;
         }
 
-        private bool HasTwoNeighbours(Cell arg)
+        private bool CanSurvive(Cell arg)
         {
             var count = _cells.Count(cell =>
             {
                 var dx = Math.Abs(cell.X - arg.X);
                 var dy = Math.Abs(cell.Y - arg.Y);
 
-                return dx == 1 || dy == 1;
+                return (dx <= 1 || dy <= 1) && (dx-dy>0);
             });
             
-            return count == 2;
+            return count == 2 || count == 3;
         }
     }
 
