@@ -25,6 +25,18 @@ namespace GameOfLife
             Assert.IsFalse(game.isAliveAt(1, 1));
         }
 
+        [TestMethod]
+        public void Run_KillsCell_WithNoNeighbors()
+        {
+            var game = new GameOfLife();
+
+            game.Register(new Cell(1, 1));
+
+            game.Run();
+
+            Assert.IsFalse(game.isAliveAt(1, 1));
+        }
+
     }
 
     public class GameOfLife
@@ -43,6 +55,11 @@ namespace GameOfLife
         public bool isAliveAt(int x, int y)
         {
             return _cells.Contains(new Cell(x,y));
+        }
+
+        public void Run()
+        {
+            _cells.Clear();
         }
     }
 
